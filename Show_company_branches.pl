@@ -19,6 +19,7 @@ my %ID_PARTS_READABLE = (
   dg_wd_saw1   => [qw( saw )],
   gal_oil_str1 => [qw( str )],
   gp_live_auc  => [qw( auc )],
+  mon_food_pln => [qw( plnt )],
   nmq_min_pln1 => [qw( plnt )],
   nmq_min_qrya => [qw( qry )],
   nmq_min_qrys => [qw( qry )],
@@ -46,22 +47,23 @@ my %DLC = (
   asu_car_pln  => 'dlc_tx',
   cal_car_exp  => 'dlc_ks',
   cal_car_pln  => 'dlc_ks',
-  ccw_rd_grg   => 'dlc_ok',  # 1.48
   ch_wd_hrv    => 'dlc_tx',
   ch_wd_saw    => 'dlc_tx',
   cm_min_qryp  => 'dlc_ut',
-  eg_che_str   => 'dlc_ok',  # 1.48
-  flv_food_pln => 'dlc_ks',
+  flv_food_pln => 'dlc_ks',  # 1.49
   kw_trk_dlr   => 'dlc_kenworth_t680',
   kw_trk_pln   => 'dlc_kenworth_t680',
-  myr_wd_mkt   => 'dlc_ok',  # 1.48
+  nls_rd_grg   => 'dlc_ne',
   nmq_min_pln1 => 'dlc_mt',
   nmq_min_qrya => 'dlc_wy',
   tay_con_sit1 => 'dlc_tx',
-  tch_el_pln   => 'dlc_ok',  # 1.48
   vor_oil_sit  => 'dlc_tx',
   vor_oil_str  => 'dlc_ok',
 );
+# To get an updated list:
+# scs_archive --list-files | grep 'def/company\.dlc_' | scs_archive --extract - --output - | grep include | sort | perl -pe "s/\@include \"company\//\t/;s/\.dlc_/ => 'dlc_/;s/\.sui\"/',/"
+# But that list should be limited to those companies that actually do
+# appear multiple times. To identify these, look at the --verbose output.
 
 
 
