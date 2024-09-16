@@ -47,18 +47,18 @@ my %DLC = (
   asu_car_pln  => 'dlc_tx',
   cal_car_exp  => 'dlc_ks',
   cal_car_pln  => 'dlc_ks',
-  ch_wd_hrv    => 'dlc_tx',
-  ch_wd_saw    => 'dlc_tx',
+  ch_wd_hrv    => 'dlc_tx',  # 1.50
+  ch_wd_saw    => 'dlc_tx',  # 1.50
   cm_min_qryp  => 'dlc_ut',
-  flv_food_pln => 'dlc_ks',  # 1.49
+#  flv_food_pln => 'dlc_ks',  # 1.49
   kw_trk_dlr   => 'dlc_kenworth_t680',
   kw_trk_pln   => 'dlc_kenworth_t680',
   nls_rd_grg   => 'dlc_ne',
   nmq_min_pln1 => 'dlc_mt',
   nmq_min_qrya => 'dlc_wy',
-  tay_con_sit1 => 'dlc_tx',
+  tay_con_sit1 => 'dlc_tx',  # 1.50
   vor_oil_sit  => 'dlc_tx',
-  vor_oil_str  => 'dlc_ok',
+  vor_oil_str  => 'dlc_ok',  # 1.50
 );
 # To get an updated list:
 # scs_archive --list-files | grep 'def/company\.dlc_' | scs_archive --extract - --output - | grep include | sort | perl -pe "s/\@include \"company\//\t/;s/\.dlc_/ => 'dlc_/;s/\.sui\"/',/"
@@ -158,7 +158,7 @@ END
 write_file 'description.txt', <<END;
 [normal]The [orange]Show company branches[normal] mod changes the names of certain in-game companies to add an identifier for the company branch.
 
-For example, where previously all Home Store locations would just be labeled [orange]Home Store[normal], with this mod active, markets and warehouses will instead be labeled [orange]Home Store //mkt[normal] and [orange]Home Store //whs[normal], respectively. This helps players who drive without simulated GPS navigation to more easily find the correct destination in cities that have multiple locations of the same company.
+For example, where previously all Home Store locations would just be labeled [orange]Home Store[normal], with this mod active, markets and warehouses will instead be labeled [orange]Home Store /mkt[normal] and [orange]Home Store /whs[normal], respectively. This helps players who drive without simulated GPS navigation to more easily find the correct destination in cities that have multiple locations of the same company.
 
 [orange]Limitations:[normal]
 
@@ -240,7 +240,7 @@ for my $company (@companies) {
   # Write new def files for all branches of affected companies
   for my $branch (@branches) {
     my $name = $company->name;
-    $name .= " //" . $id_parts_readable{$branch->id} . "";
+    $name .= " /" . $id_parts_readable{$branch->id} . "";
     
     if ($options{verbose}) {
       my $dlc = ($DLC{$branch->id} // '') =~ s/.*(?:^|_)[^_]*?(...?)$/$1/r;
