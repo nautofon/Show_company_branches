@@ -49,20 +49,16 @@ my %ID_PARTS_READABLE = (
 # This list frequently changes with major game updates. The current version
 # as well as the previous version should be supported.
 my %DLC = (
-  asu_car_pln  => 'dlc_tx',
-  cal_car_exp  => 'dlc_ks',
-  cal_car_pln  => 'dlc_ks',
-#  ch_wd_hrv    => 'dlc_tx',  # 1.50
-#  ch_wd_saw    => 'dlc_tx',  # 1.50
+  asu_car_pln  => 'dlc_tx',  # 1.53
+  cal_car_exp  => 'dlc_ks',  # 1.53
+  cal_car_pln  => 'dlc_ks',  # 1.53
   cm_min_qryp  => 'dlc_ut',
   kw_trk_dlr   => 'dlc_kenworth_t680',
   kw_trk_pln   => 'dlc_kenworth_t680',
-  nls_rd_grg   => 'dlc_ne',
+  nls_rd_grg   => 'dlc_ne',  # 1.53
   nmq_min_pln1 => 'dlc_mt',
   nmq_min_qrya => 'dlc_wy',
-#  tay_con_sit1 => 'dlc_tx',  # 1.50
-  vor_oil_sit  => 'dlc_tx',
-#  vor_oil_str  => 'dlc_ok',  # 1.50
+  vor_oil_sit  => 'dlc_tx',  # 1.53
 );
 # To get an updated list:
 # scs_archive --list-files | grep 'def/company\.dlc_' | scs_archive --extract - --output - | grep include | sort | perl -pe "s/\@include \"company\//\t/;s/\.dlc_/ => 'dlc_/;s/\.sui\"/',/"
