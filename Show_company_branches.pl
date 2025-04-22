@@ -3,8 +3,11 @@
 use v5.36;
 
 use ATS_DB;
+use Archive::SCS;
+use Archive::SCS::InMemory;
+use Archive::SCS::Zip;
 use Getopt::Long 2.33 qw( :config posix_default gnu_getopt auto_version auto_help );
-use IO::Compress::Zip qw( :constants $ZipError );
+use IO::Compress::Zip qw( :constants );
 use List::Util 1.45 qw( any none min uniqstr );
 use Pod::Usage qw( pod2usage );
 use Path::Tiny 0.125;
@@ -101,25 +104,18 @@ die "'$file' exists; cannot replace"
 die "File '$file' exists; use --replace, -r to overwrite"
   if $file->exists && ! $options{replace};
 
-my %ZIP_OPTS = (
-  Method => ZIP_CM_STORE,
-  Minimal => 1,
-  TextFlag => 1,
-  ZipComment => $file->basename,
-);
-my $zip;
+my %files;
 
-sub write_file ( $name, $data, $zip_opts = {} ) {
+sub write_file ( $name, $data, $file_opts = {} ) {
   if ($dir) {
     my $subdir = $dir->child($name)->parent;
     $subdir->mkdir unless $subdir->exists;
   }
   $dir->child($name)->spew_raw($data) if $dir;
-  my %zip_opts = ( %ZIP_OPTS, name => $name, $zip_opts->%* );
-  $zip and $zip->newStream(%zip_opts);
-  $zip //= IO::Compress::Zip->new($file->openw_raw, %zip_opts);
-  $zip or die "IO::Compress::Zip failed: $ZipError\n";
-  $zip->write($data);
+  
+  $files{$name} and die "duplicate file $name";
+  $files{$name} = { data => $data, file_opts => $file_opts };
+  $files{$name}{file_opts}{zip_opts}{Method} //= ZIP_CM_STORE unless $options{compress};
 }
 
 
@@ -140,7 +136,7 @@ if ($options{compatible_versions}) {
 }
 $compatible_versions = join "", map {"\tcompatible_versions[]: \"$_.*\"\n"} @$compatible_versions;
 
-write_file 'manifest.sii', <<END;
+write_file 'manifest.sii', <<END, { order => chr 0 };
 SiiNunit
 {
 mod_package : .branch_names {
@@ -155,7 +151,7 @@ $compatible_versions}
 }
 END
 
-write_file 'description.txt', <<END;
+write_file 'description.txt', <<END, { order => chr 1 };
 [normal]The [orange]Show company branches[normal] mod changes the names of certain in-game companies to add an identifier for the company branch.
 
 For example, where previously all Home Store locations would just be labeled [orange]Home Store[normal], with this mod active, markets and warehouses will instead be labeled [orange]Home Store /mkt[normal] and [orange]Home Store /whs[normal], respectively. This helps players who drive without simulated GPS navigation to more easily find the correct destination in cities that have multiple locations of the same company.
@@ -185,7 +181,9 @@ if (length $options{thumbnail}) {
   my $thumbnail = path($options{thumbnail})->slurp_raw;
   $thumbnail =~ m/^\xff\xd8(?:\xff\xe0..JFIF|\xff\xe1..Exif)/ or die "Thumbnail is not a JPEG file";
   # requires exact size: 276x162px
-  write_file 'thumbnail.jpg', $thumbnail, { TextFlag => 0 };
+  write_file 'thumbnail.jpg', $thumbnail, {
+    zip_opts => { Time => path($options{thumbnail})->stat->mtime },
+  };
 }
 
 
@@ -269,7 +267,17 @@ for my $company (@companies) {
   }
 }
 
-$zip->close;
+my %dirs = Archive::SCS::DirIndex->auto_index([ keys %files ])->%*;
+
+my $scs = Archive::SCS->new;
+my $mem = Archive::SCS::InMemory->new;
+$mem->add_entry($_, $files{$_}{data}) for keys %files;
+$mem->add_entry($_, $dirs{$_}) for keys %dirs;
+$scs->mount($mem);
+
+my %file_opts = map {( $_ => $files{$_}{file_opts} )} keys %files;
+
+Archive::SCS::Zip::create_file($file, $scs, \%file_opts);
 
 
 
