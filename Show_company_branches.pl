@@ -49,27 +49,6 @@ my %ID_PARTS_READABLE = (
   wal_whs      => [qw( nonfd whs )],
 );
 
-# Some company defs are kept in the DLCs, some are not. There doesn't seem
-# to be an entirely reliable rule for this, so we need to hard-code it.
-# This list frequently changes with major game updates. The current version
-# as well as the previous version should be supported.
-my %DLC = (
-  asu_car_pln  => 'dlc_tx',  # 1.53
-  cal_car_exp  => 'dlc_ks',  # 1.53
-  cal_car_pln  => 'dlc_ks',  # 1.53
-  cm_min_qryp  => 'dlc_ut',
-  kw_trk_dlr   => 'dlc_kenworth_t680',
-  kw_trk_pln   => 'dlc_kenworth_t680',
-  nls_rd_grg   => 'dlc_ne',  # 1.53
-  nmq_min_pln1 => 'dlc_mt',
-  nmq_min_qrya => 'dlc_wy',
-  vor_oil_sit  => 'dlc_tx',  # 1.53
-);
-# To get an updated list:
-# scs_archive --list-files | grep 'def/company\.dlc_' | scs_archive --extract - --output - | grep include | sort | perl -pe "s/\@include \"company\//\t/;s/\.dlc_/ => 'dlc_/;s/\.sui\"/',/"
-# But that list should be limited to those companies that actually do
-# appear multiple times. To identify these, look at the --verbose output.
-
 
 
 my %options = (
@@ -192,6 +171,16 @@ if (length $options{thumbnail}) {
 }
 
 
+
+# Some company defs are kept in the DLCs (especially in ATS 1.54 and earlier).
+# We need to know about those because they need a different file path in the mod.
+my %DLC;
+my $dlc_mounted = $ats->mounted( grep m'^dlc_', $ats->archives );
+for ( grep m'^def/company\.dlc_', $dlc_mounted->list_files ) {
+  for ( split m'\n', $dlc_mounted->read_entry($_) ) {
+    $DLC{$1} = $2 if m'^@include "company/(.+?)\.(dlc_.+?)\.sui"';
+  }
+}
 
 my $parser = Data::SCS::DefParser->new( mount => $options{game} );
 my $data = $parser->data;
