@@ -1,0 +1,34 @@
+# Human-readable branch identifies for ATS companies
+
+# These need to be short in order to fit into the in-game UI text fields.
+# They're normally supposed to be auto-generated from the internal branch
+# tokens, but those aren't always fully adequate for this purpose.
+
+bn_live_auc  : auc
+cm_brx_pln   : plnt
+cm_min_plnt  : plnt
+cm_min_qry   : qry
+cm_min_qryp  : qry
+cm_min_str   : str
+cm_min_svc   : svc
+dg_wd_saw1   : saw
+gal_oil_str1 : str
+gp_live_auc  : auc
+mon_food_pln : plnt
+nmq_min_pln1 : plnt
+nmq_min_qrya : qry
+nmq_min_qrys : qry
+pns_con_sit  : cons  # generic
+pns_con_sit1 : cons  # basement
+pns_con_sit2 : hse cons
+pns_con_sit3 : whs cons
+tay_con_sit  : cons  # generic
+tay_con_sit1 : cons  # basement
+tay_con_sit2 : cons  # houses
+tay_con_sit3 : cons  # warehouse
+vor_oil_str1 : str
+vor_oil_str  : term
+# wal_food_mkt : food mkt  # problem is, we still have like "food str" for grain silos,
+# wal_food_whs : food whs  # so "fd" just here doesn't really make sense
+wal_mkt      : nonfd mkt
+wal_whs      : nonfd whs
