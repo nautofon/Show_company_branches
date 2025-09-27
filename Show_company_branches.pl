@@ -2,15 +2,17 @@
 
 use v5.36;
 
-use ATS_DB;
 use Archive::SCS;
+use Archive::SCS::GameDir;
 use Archive::SCS::InMemory;
 use Archive::SCS::Zip;
+use Data::SCS::DefParser 0.11;
 use Getopt::Long 2.33 qw( :config posix_default gnu_getopt auto_version auto_help );
 use IO::Compress::Zip qw( :constants );
 use List::Util 1.45 qw( any none min uniqstr );
 use Pod::Usage qw( pod2usage );
 use Path::Tiny 0.125;
+use YAML::Tiny;
 
 my $MODS_DIR = '~/Library/Application Support/American Truck Simulator/mod';
 my $MOD_SLUG = 'Show_company_branches';
@@ -70,15 +72,18 @@ my %DLC = (
 
 
 
-my %options = ( thumbnail => '' );
+my %options = (
+  branch_desc => 'branch_desc.yaml',
+  game        => 'ATS',
+  thumbnail   => '',
+);
 GetOptions(
   'dir=s' => \$options{dir},
   'man' => \$options{man},
   'replace|r' => \$options{replace},
   'clean' => \$options{clean},
   'thumbnail|t=s' => \$options{thumbnail},
-  'sii' => \$options{sii},
-  'version=s' => \$options{version},
+  'game' => \$options{game},
   'mod-version=s' => \$options{mod_version},
   'verbose|v' => \$options{verbose},
   'compatible-versions!' => \$options{compatible_versions},
@@ -120,9 +125,9 @@ sub write_file ( $name, $data, $file_opts = {} ) {
 
 
 
-ats_db(%options);
+my $ats = Archive::SCS::GameDir->new( game => $options{game} );
 
-my $game_version = ats_db->version;
+my $game_version = $ats->version =~ s/\A( .+? \. .+? )\..*/$1/rx;
 my $package_version = $options{mod_version} // $game_version;
 my $compatible_versions = [];
 if ($options{compatible_versions}) {
@@ -188,30 +193,52 @@ if (length $options{thumbnail}) {
 
 
 
-my @all_locs = ats_db->all_locations;
+my $parser = Data::SCS::DefParser->new( mount => $options{game} );
+my $data = $parser->data;
+
+my %companies = eval { YAML::Tiny->read( path(__FILE__)->sibling('company.yaml') )->[0]->%* };
+
+if ( ! %companies ) {
+  # If no company file is available, we can try to generate equivalent data
+  # by looking at which branches share a logo texture in the UI.
+  my $base = $ats->mounted('base.scs');
+  for my $branch ( sort keys $data->{company}{permanent}->%* ) {
+    my $company = eval {
+      my $logo = $base->read_entry("material/ui/company/small/$branch.mat");
+      $logo =~ m/source *: *"(.+?)\.tobj"/ and $1
+    } // 'fallback';
+    push $companies{$company}{branches}->@*, $branch;
+    $companies{$company}{name} = $data->{company}{permanent}{$branch}{name};
+  }
+  # Fix overlong names
+  $companies{jns}{name}    = 'Johnson & Smith';
+  $companies{taylor}{name} = 'Taylor';
+}
+
+
+
+my @all_locs = $parser->all_locations(\%companies, $data);
 my @companies =
-  sort { $a->name cmp $b->name }
-  map { ats_db->get(company => $_) }
-  ats_db->all_ids('company');
+  sort { $companies{$a}{name} cmp $companies{$b}{name} }
+  sort keys %companies;
 
 COMPANY:
 for my $company (@companies) {
   my @branches =
-    map { ats_db->get(branch => $_) } sort
-    grep { my $id = $_; any { $_->{branch}->id eq $id } @all_locs }
-    ats_db->all_ids_for(branch => company => $company->id);
+    grep { my $id = $_; any { $_->{branch} eq $id } @all_locs }
+    $companies{$company}{branches}->@*;
   next COMPANY unless @branches > 1;
   
   # Skip companies that never have two locations in the same city
   # (This could probably be further improved by also skipping *branches*
   # that only ever appear alone in a city.)
-  my @company_locs = grep { $_->{company}->id eq $company->id } @all_locs;
-  my @loc_cities = sort { $a->id cmp $b->id } map { $_->{city} } @company_locs;
+  my @company_locs = grep { $_->{company} eq $company } @all_locs;
+  my @loc_cities = sort map { $_->{city} } @company_locs;
   my @cities = uniqstr @loc_cities;
   next COMPANY if @loc_cities == @cities;
   
   # Prepare short human-readable branch ids
-  my @id_parts_branches = map {[ split '_', $_->id ]} @branches;
+  my @id_parts_branches = map {[ split '_', $_ ]} @branches;
   my $i = 0;
   ++$i while
     none { $_ ne ($id_parts_branches[0]->[$i] // '') }
@@ -219,41 +246,44 @@ for my $company (@companies) {
   my $id_parts_common = $i;
   my %id_parts_readable;
   for my $branch (@branches) {
-    my @id_parts = split '_', $branch->id;
+    my @id_parts = split '_', $branch;
     shift @id_parts for 1 .. min( $id_parts_common, $#id_parts );
-    @id_parts = $ID_PARTS_READABLE{$branch->id}->@* if $ID_PARTS_READABLE{$branch->id};
-    $id_parts_readable{$branch->id} = join ' ', @id_parts;
+    @id_parts = $ID_PARTS_READABLE{$branch}->@* if $ID_PARTS_READABLE{$branch};
+    $id_parts_readable{$branch} = join ' ', @id_parts;
   }
   
   # QA: Verify that there is no city with two company locations that
   # share the same human-readable branch id
   for my $city (@cities) {
     my @ids = sort
-      map { $id_parts_readable{$_->{branch}->id} }
-      grep { $_->{city}->id eq $city->id } @company_locs;
-    die sprintf "Duplicate human-readable branch ids for %s in %s",
-      $company->name, $city->name if @ids != uniqstr @ids;
+      map { $id_parts_readable{$_->{branch}} }
+      grep { $_->{city} eq $city } @company_locs;
+    @ids == uniqstr @ids or die
+      sprintf "Duplicate human-readable branch ids for %s in %s",
+      $companies{$company}{name} // "'$company'",
+      $data->{city}{$city}{city_name};
   }
   
   # Write new def files for all branches of affected companies
   for my $branch (@branches) {
-    my $name = $company->name;
-    $name .= " /" . $id_parts_readable{$branch->id} . "";
+    my $name = $companies{$company}{name};
+    $name .= " /" . $id_parts_readable{$branch} . "";
     
     if ($options{verbose}) {
-      my $dlc = ($DLC{$branch->id} // '') =~ s/.*(?:^|_)[^_]*?(...?)$/$1/r;
+      my $dlc = ($DLC{$branch} // '') =~ s/.*(?:^|_)[^_]*?(...?)$/$1/r;
+      state %branch_desc = eval { YAML::Tiny->read( $options{branch_desc} )->[0]->%* };
       say sprintf '%-12s %3s  %-28s "%s"',
-        $branch->id, $dlc, $name, lc $branch->long_desc;
+        $branch, $dlc, $name, $branch_desc{$branch} // '';
     }
     
     my %sui = (
-      branch_id    => $branch->id,
+      branch_id    => $branch,
       name         => $name,
       sort_name    => lc $name,
-      trailer_look => $branch->{trailer_look},
+      trailer_look => $data->{company}{permanent}{$branch}{trailer_look},
     );
-    my @filenames = $branch->id . '.sui';
-    push @filenames, $branch->id . '.' . $DLC{$branch->id} . '.sui' if $DLC{$branch->id};
+    my @filenames = $branch . '.sui';
+    push @filenames, $branch . '.' . $DLC{$branch} . '.sui' if $DLC{$branch};
     for my $filename (@filenames) {
       write_file "def/company/$filename", <<~END;
       company_permanent: company.permanent.$sui{branch_id}
@@ -316,7 +346,7 @@ C<--replace>, C<-r> = replace the directory contents, if any
 
 C<--clean> = if used along with --dir --replace, deletes all directory contents
 
-C<--sii>, C<--version> = control data source
+C<--game> = control data source
 
 C<--verbose> = additional debugging output
 

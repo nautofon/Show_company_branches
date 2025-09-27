@@ -1,0 +1,229 @@
+# Human-readable branch descriptions for ATS companies
+
+# There is no canonical description that fits everywhere, because
+# SCS are themselves inconsistent with usage. There are also some
+# cases where the differences between branches are too minor to
+# really matter (e.g. dg_wd_saw/dg_wd_saw1 are both just "sawmill").
+
+# #### = TODO verify
+
+42p_pck_pln  : packaging plant
+42p_print    : printing plant
+ai_car_pln   : factory  ####
+ai_car_whs   : warehouse  ####
+aml_rail_str : depot
+aml_rail_wrk : work site
+asu_car_dlr  : dealership
+asu_car_exp  : export facility
+  # tx car factory warehouse
+asu_car_pln  : factory
+asu_car_whs  : warehouse
+avs_met_scr  : scrapyard
+avs_met_sml  : smelter
+bit_rd_grg   : garage
+bit_rd_svc   : depot
+bit_rd_wrk   : roadworks
+bn_farm      : farm
+bn_live_auc  : livestock auction
+cal_car_exp  : export facility  ####
+cal_car_pln  : factory  ####
+ch_wd_hrv    : logging site
+ch_wd_saw    : sawmill
+cha_el_mkt   : market
+cha_el_whs   : warehouse
+chm_che_plns : silane plant  # only in Butte, MT
+chm_che_plnt : chemical plant  # Refinery / Oil Depot
+chm_che_str  : chemical storage  # Oil Storage
+cm_brx_pln   : borax plant  # only in Barstow, CA
+cm_min_plnt  : cement plant
+cm_min_qry   : quarry
+cm_min_qryp  : potash plant  # only in Moab, UT
+cm_min_str   : storage
+cm_min_str1  : storage  ####
+cm_min_svc   : warehouse
+dg_wd_hrv    : logging site
+dg_wd_saw    : sawmill  # larger
+dg_wd_saw1   : sawmill  # smaller
+ed_mkt       : market
+ed_whs       : warehouse  # there might be none
+ele_epw_sit  : substation  #### new in 1.53
+ele_epw_svc  : public utility  #### new in 1.53 + weird name
+fb_farm_mkt  : market
+fb_farm_pln  : feed mill
+flv_food_pln : factory  ####
+flv_food_str : storage  ####
+frd_epw_sit  : substation
+frd_epw_svc  : public utility  ####
+gal_oil_gst  : underground tank
+gal_oil_ref  : refinery
+gal_oil_sit  : oil drilling site
+gal_oil_str  : oil storage
+gal_oil_str1 : storage  # only exists next to fracking site
+gal_oil_svc  : service facility  #### new in 1.53
+gal_oil_well : oil well  #### new in 1.53
+gar_rail_str : depot  ####
+garc_train   : rail yard
+gld_frm      : farm
+gld_frm_grg  : garage
+gm_chs_plnt  : dairy plant
+gm_food_plnt : food plant
+gm_food_str  : grain elevator
+gp_farm      : farm
+gp_live_auc  : livestock auction
+hs_mkt       : market
+hs_whs       : warehouse
+jns_rail_str : depot
+jns_rail_wrk : work site
+kw_trk_dlr   : dealership
+kw_trk_pln   : factory
+mon_farm     : vineyard
+mon_food_pln : winery  ####
+nls_rd_grg   : garage
+nls_rd_svc   : depot
+nls_rd_wrk   : roadworks
+nmq_min_pln1 : talc plant
+nmq_min_plnt : cement plant
+nmq_min_qry  : quarry
+nmq_min_qrya : soda ash mine  # only in Rock Springs, WY - from 1.48
+nmq_min_qrys : salt mine      # only in Hutchinson, KS - used in WY until 1.47
+nmq_min_str  : storage
+nmq_min_svc  : warehouse
+plu_el_mkt   : market
+plu_el_pln   : factory
+plu_el_whs   : warehouse
+pns_con_grg  : garage
+pns_con_sit  : construction            # generic site (base map = flats)
+pns_con_sit1 : basement construction   # Const. site - basement (excavated)
+pns_con_sit2 : house construction      # or_wooden_house
+pns_con_sit3 : warehouse construction  # or_metal_warehouse
+pns_con_whs  : warehouse
+sc_frm       : farm
+sc_frm_grg   : garage
+sh_shp_mar   : marina
+sh_shp_plnt  : plant
+st_met_whs   : warehouse
+st_met_wrk   : workshop
+tay_con_grg  : garage
+tay_con_sit  : construction            # generic site
+tay_con_sit1 : basement construction   # Const. site - basement (excavated)
+tay_con_sit2 : house construction      # or_wooden_house
+tay_con_sit3 : warehouse construction  # or_metal_warehouse
+tay_con_whs  : warehouse
+vm_car_dlr   : dealership
+vm_car_exp   : export facility
+vm_car_pln   : factory
+vm_car_whs   : warehouse
+vor_oil_gst  : underground tank
+vor_oil_ref  : refinery
+vor_oil_sit  : oil drilling site
+vor_oil_str  : transshipment terminal  # only in Oklahoma City, OK
+vor_oil_str1 : storage
+vp_epw_pln   : plant
+vp_epw_sit   : construction site
+wal_food_mkt : food market
+wal_food_whs : food warehouse
+wal_mkt      : non-food market
+wal_whs      : non-food warehouse
+ws_trk_dlr   : dealership
+ws_trk_pln   : factory
+
+
+
+# Descriptions for single-branch companies (just for completeness)
+
+# #### = TODO verify
+
+18w_trl_svc  : service facility
+ali_car_dlr  : dealership
+apa_car_whs  : warehouse  #### new in 1.53
+aport_abq    : air cargo
+aport_den    : air cargo
+aport_dfw    : air cargo
+aport_elp    : air cargo
+aport_gtf    : air cargo
+aport_iah    : air cargo
+aport_ict    : air cargo
+aport_lax    : air cargo  #### new in 1.53
+aport_lit    : air cargo  #### new in AR
+aport_pcc    : air cargo
+aport_phx    : air cargo
+aport_tul    : air cargo
+aport_ult    : airplane
+apx_met_sml  : smelter  #### new in AR
+aro_oil_gst  : underground tank
+ath_trk_dlr  : dealership
+az_gls_pln   : factory
+blo_frm_str  : landscaper  #### new in 1.53
+bm_con_pln   : building material factory  ####
+cal_farm_alm : almond farm
+ccw_rd_grg   : municipal services garage
+dc_car_dlr   : dealer
+dmc_car_dlr  : dealer
+dpw_oil_svc  : service facility
+drh_mkt      : market  #### new in AR
+dri_oil_gst  : underground tank
+du_farm      : vineyard
+dw_air_pln   : aircraft factory
+dyn_car_pln  : tire factory
+eg_che_str   : industrial gases storage
+elm_whs      : warehouse  #### new in 1.53
+elv_el_pln   : battery factory  ####
+ent_whs      : warehouse  #### new in 1.53
+equ_whs      : warehouse
+evg_frm      : farm  ####
+ftf_food_pln : seafood plant
+fus_oil_gst  : underground tank
+gas_che_str  : industrial gases storage  #### new in 1.53
+gol_trk_pln  : factory
+gpw_rd_grg   : garage  #### new in 1.53
+grp_oil_gst  : underground tank
+gss_air_svc  : aviation services  ####
+hau_oil_gst  : underground tank
+hds_met_shp  : dockyard
+hf_wd_pln    : factory
+hms_con_svc  : service facility
+lsf_crg_fwd  : forwarding facility
+lum_car_dlr  : dealership
+mcs_con_sit  : mud slide site  # event
+mr_cot_pln   : factory
+mwm_wst_whs  : waste station
+myr_wd_mkt   : furniture store
+naf_oil_gst  : underground tank
+oak_port     : seaport
+oh_con_hom   : factory
+out_car_pln  : factory  ####
+pcp_car_whs  : warehouse  #### new in 1.53
+pet_oil_well : oil well
+pho_oil_gst  : underground tank
+pic_mkt      : market
+pnp_wd_pln   : plant
+port_bea     : seaport
+port_bro     : seaport
+port_cor     : seaport
+port_gal     : seaport
+port_hou     : seaport
+port_la      : seaport  #### new in 1.53
+port_sea     : seaport
+port_tac     : seaport
+pt_trk_dlr   : dealership
+re_train     : rail yard
+rp_port      : river port
+sb_whs       : warehouse  #### new in 1.53
+sf_port      : seaport
+sg_whs       : warehouse
+sht_mkt      : food market  #### new in 1.53
+spc_whs      : warehouse
+swb_sug_plnt : sugar factory
+syn_che_plnt : chemical plant
+tch_el_pln   : electrical appliance factory
+ter_met_shp  : dockyard
+tid_mkt      : market
+usb_food_pln : plant
+ven_whs      : warehouse  #### new in 1.53
+wac_air_svc  : aviation services  #### new in MO
+wan_car_dlr  : dealership
+wds_wst_whs  : waste station  #### new in 1.53
+wld_frm_str  : landscaper
+wp_oil_gst   : underground tank
+xtm_con_svc  : service facility
+yel_bus_pln  : school bus factory
