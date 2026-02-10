@@ -13,6 +13,10 @@ ai_car_pln   : factory  ####
 ai_car_whs   : warehouse  ####
 aml_rail_str : depot
 aml_rail_wrk : work site
+apx_met_scr  : scrapyard  ####
+apx_met_sml  : smelter  #### new in AR
+apx_met_whs  : warehouse  ####
+apx_met_wrk  : workshop  ####
 asu_car_dlr  : dealership
 asu_car_exp  : export facility
   # tx car factory warehouse
@@ -82,6 +86,7 @@ nls_rd_grg   : garage
 nls_rd_svc   : depot
 nls_rd_wrk   : roadworks
 nmq_min_pln1 : talc plant
+nmq_min_pln2 : ~
 nmq_min_plnt : cement plant
 nmq_min_qry  : quarry
 nmq_min_qrya : soda ash mine  # only in Rock Springs, WY - from 1.48
@@ -103,6 +108,9 @@ sh_shp_mar   : marina
 sh_shp_plnt  : plant
 st_met_whs   : warehouse
 st_met_wrk   : workshop
+syn_che_plne : ~
+syn_che_plnt : chemical plant
+syn_che_str  : storage  ####
 tay_con_grg  : garage
 tay_con_sit  : construction            # generic site
 tay_con_sit1 : basement construction   # Const. site - basement (excavated)
@@ -149,7 +157,6 @@ aport_pcc    : air cargo
 aport_phx    : air cargo
 aport_tul    : air cargo
 aport_ult    : airplane
-apx_met_sml  : smelter  #### new in AR
 aro_oil_gst  : underground tank
 ath_trk_dlr  : dealership
 az_gls_pln   : factory
@@ -171,6 +178,7 @@ elv_el_pln   : battery factory  ####
 ent_whs      : warehouse  #### new in 1.53
 equ_whs      : warehouse
 evg_frm      : farm  ####
+ffe_frm_dlr  : farm equipment dealership
 ftf_food_pln : seafood plant
 fus_oil_gst  : underground tank
 gas_che_str  : industrial gases storage  #### new in 1.53
@@ -196,6 +204,7 @@ pcp_car_whs  : warehouse  #### new in 1.53
 pet_oil_well : oil well
 pho_oil_gst  : underground tank
 pic_mkt      : market
+pio_car_dlr  : dealership
 pnp_wd_pln   : plant
 port_bea     : seaport
 port_bro     : seaport
@@ -214,7 +223,6 @@ sg_whs       : warehouse
 sht_mkt      : food market  #### new in 1.53
 spc_whs      : warehouse
 swb_sug_plnt : sugar factory
-syn_che_plnt : chemical plant
 tch_el_pln   : electrical appliance factory
 ter_met_shp  : dockyard
 tid_mkt      : market

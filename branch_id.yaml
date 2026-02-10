@@ -1,4 +1,4 @@
-# Human-readable branch identifies for ATS companies
+# Human-readable branch identifiers for ATS companies
 
 # These need to be short in order to fit into the in-game UI text fields.
 # They're normally supposed to be auto-generated from the internal branch
@@ -16,6 +16,7 @@ gal_oil_str1 : str
 gp_live_auc  : auc
 mon_food_pln : plnt
 nmq_min_pln1 : plnt
+nmq_min_pln2 : plnt
 nmq_min_qrya : qry
 nmq_min_qrys : qry
 pns_con_sit  : cons  # generic
